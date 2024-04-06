@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns = "http://www.springframework.org/schema/beans"
+        xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation = "http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+        
+        <context:component-scan base-package="productcrudapp"/>
+        <tx:annotation-driven/> <!-- is used to start/configure the last bean class -->
+        
+          <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          name="viewResolver">
+          <property name="prefix" value="/WEB-INF/views/"/>
+          <property name="suffix" value=".jsp"/>
+         
+          </bean>
+           
+        
+                          
+          <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" name="DS">
+         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/productCrud"/>
+        <property name="username" value="root"/>
+        <property name="password" value="Yash0609!"/>
+                          </bean>
+                                   <!--LSFBObject  -->
+                   <bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" name="LSFB">
+                   
+                                   <!-- DATA SOURCE -->
+                                   
+                           <property name="dataSource" ref="DS"></property>
+                           
+                           <!-- HIBERNATE PROPERTIES -->
+                           
+                           <property name="hibernateProperties"  >
+                              <props>
+                                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL55Dialect</prop>
+                                 <prop key="hibernate.show_sql">true</prop>
+                                 
+                                 <prop key="hibernate.hbm2ddl.auto">update</prop>
+                                  
+                               </props>
+                            </property>
+                            
+                                      <!--ANNOTEDCLASS  --><!-- class which have entity annotation -->
+                          <property name="annotatedClasses">
+                             <list>
+                                <value>
+                                  productcrudapp.model.Product
+                                 </value>
+                                 </list>  
+                          </property>
+                          </bean>
+          
+          <bean class="org.springframework.orm.hibernate5.HibernateTemplate" name="hibernateTemplate">
+                          <property name="sessionFactory" ref="LSFB"></property> 
+                          </bean>
+
+        
+       
+        <bean name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="LSFB"/>
+    </bean>
+    </beans>
